@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../core/l10n.dart';
 import '../../core/theme.dart';
 import '../../data/models.dart';
@@ -24,7 +24,6 @@ class LibraryScreen extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: 8),
                   child: Text('Library', style: AppText.pageTitle),
                 ),
-              // Search everything
               GestureDetector(
                 onTap: () => Navigator.pushNamed(context, '/search'),
                 child: Container(
@@ -97,7 +96,6 @@ class LibraryScreen extends StatelessWidget {
       },
     );
   }
-
 
   Widget _category(BuildContext context, AppState state, ItemType type,
       int count) {

@@ -1,8 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import '../data/scope.dart';
 
-/// Supported languages (international level, no duplicates).
 const List<Locale> supportedLocales = [
   Locale('en'), Locale('es'), Locale('fr'), Locale('de'), Locale('pt'),
   Locale('it'), Locale('nl'), Locale('ru'), Locale('tr'), Locale('ar'),
@@ -33,13 +32,11 @@ const Map<String, String> languageNames = {
   'id': 'Bahasa Indonesia',
 };
 
-/// Translate [key] into the app's current language.
 String t(BuildContext context, String key) {
   final lang = AppScope.of(context).langCode;
   return l10n[lang]?[key] ?? _en[key] ?? key;
 }
 
-/// Localized singular label for a library item type.
 String itemTypeLabel(BuildContext context, dynamic type) {
   switch (type.toString()) {
     case 'ItemType.screenshot':
@@ -55,7 +52,6 @@ String itemTypeLabel(BuildContext context, dynamic type) {
   }
 }
 
-/// Localized plural label for a library item type.
 String itemTypePlural(BuildContext context, dynamic type) {
   switch (type.toString()) {
     case 'ItemType.screenshot':
@@ -208,7 +204,6 @@ const Map<String, String> _en = {
   'onDeviceAI': 'On-device AI — tap to connect',
 };
 
-
 const Map<String, String> _es = {
   'home': 'Inicio', 'library': 'Biblioteca', 'notesL': 'Notas', 'ai': 'IA', 'tasks': 'Tareas',
   'scan': 'Escanear', 'note': 'Nota', 'upload': 'Subir', 'search': 'Buscar',
@@ -329,7 +324,6 @@ const Map<String, String> _fr = {
   'appLockedMsg': 'Le verrouillage est activé. Déverrouillez pour continuer.',
   'cancel': 'Annuler', 'onDeviceAI': 'IA locale — touchez pour connecter',
 };
-
 
 const Map<String, String> _de = {
   'home': 'Start', 'library': 'Bibliothek', 'notesL': 'Notizen', 'ai': 'KI', 'tasks': 'Aufgaben',
@@ -515,7 +509,6 @@ const Map<String, String> _it = {
   'cancel': 'Annulla', 'onDeviceAI': 'IA locale — tocca per connettere',
 };
 
-
 const Map<String, String> _nl = {
   'home': 'Start', 'library': 'Bibliotheek', 'notesL': 'Notities', 'ai': 'AI', 'tasks': 'Taken',
   'scan': 'Scannen', 'note': 'Notitie', 'upload': 'Uploaden', 'search': 'Zoeken',
@@ -698,7 +691,6 @@ const Map<String, String> _tr = {
   'cancel': 'İptal', 'onDeviceAI': 'Cihaz-YZ — bağlanmak için dokun',
 };
 
-
 const Map<String, String> _ar = {
   'home': 'الرئيسية', 'library': 'المكتبة', 'notesL': 'الملاحظات', 'ai': 'الذكاء', 'tasks': 'المهام',
   'scan': 'مسح', 'note': 'ملاحظة', 'upload': 'تحميل', 'search': 'بحث',
@@ -870,7 +862,6 @@ const Map<String, String> _hi = {
   'cancel': 'रद्द करें', 'onDeviceAI': 'डिवाइस एआई — कनेक्ट करने के लिए टैप करें',
 };
 
-
 const Map<String, String> _bn = {
   'home': 'হোম', 'library': 'লাইব্রেরি', 'notesL': 'নোট', 'ai': 'এআই', 'tasks': 'কাজ',
   'scan': 'স্ক্যান', 'note': 'নোট', 'upload': 'আপলোড', 'search': 'খুঁজুন',
@@ -1035,7 +1026,6 @@ const Map<String, String> _zh = {
   'appLockedMsg': '应用锁已开启。解锁以继续。',
   'cancel': '取消', 'onDeviceAI': '设备端 AI — 点按连接',
 };
-
 
 const Map<String, String> _ja = {
   'home': 'ホーム', 'library': 'ライブラリ', 'notesL': 'ノート', 'ai': 'AI', 'tasks': 'タスク',

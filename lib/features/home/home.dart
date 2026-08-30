@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../core/l10n.dart';
 import '../../core/theme.dart';
 
@@ -58,7 +58,6 @@ class HomeScreen extends StatelessWidget {
               Text(t(context, 'welcome'), style: AppText.pageTitle),
               const SizedBox(height: 20),
 
-              // AI focal card
               _AiCard(onAsk: (q) {
                 Navigator.pushNamed(context, '/ai-focus', arguments: q);
               }),

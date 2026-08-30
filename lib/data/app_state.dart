@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -27,7 +27,6 @@ class AppState extends ChangeNotifier {
   static const _kAiModel = 'alu_ai_model';
   static const _ssApiKey = 'auvia_ai_key';
 
-  /// Input limits (single validation choke point for user content).
   static const maxTitleLength = 200;
   static const maxBodyLength = 20000;
   static const maxCategoryLength = 40;
@@ -48,27 +47,21 @@ class AppState extends ChangeNotifier {
   String themeKey = 'light';
   String langCode = 'en';
 
-  /// AI gateway key. Lives in Keystore-backed secure storage, never in
-  /// plaintext prefs. Falls back to the compiled default until the user
-  /// overrides it (or clears it).
   String apiKey = Secrets.compiledAiKey;
   String aiModel = Secrets.compiledAiModel;
 
-  /// Runtime only: cleared on every app start.
   bool sessionUnlocked = false;
 
   static const _secureStorage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 
-  /// Sanitizes user text: trims, strips control characters and caps length.
   static String _sanitize(String raw, int maxLen) {
     var s = raw.trim().replaceAll(RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F]'), '');
     if (s.length > maxLen) s = s.substring(0, maxLen);
     return s;
   }
 
-  /// Category names must never contain the '|' storage delimiter.
   static String _sanitizeCategory(String raw) =>
       _sanitize(raw, maxCategoryLength).replaceAll('|', '/');
 
@@ -82,7 +75,6 @@ class AppState extends ChangeNotifier {
     reminders = _decode(_kReminders, Reminder.fromJson);
     messages = _decode(_kMessages, ChatMessage.fromJson);
 
-    // One-time migration: remove pre-1.4 sample content.
     if (!(_prefs.getBool(_kMigrated) ?? false)) {
       const sampleItems = {'s1', 's2', 'd1', 'r1', 't1', 'n1', 'n2'};
       const sampleTasks = {'tk1', 'tk2', 'tk3', 'tk4'};
@@ -114,7 +106,6 @@ class AppState extends ChangeNotifier {
             .where((s) => s.trim().isNotEmpty)
             .toList();
     aiModel = _prefs.getString(_kAiModel) ?? Secrets.compiledAiModel;
-    // The key lives in Keystore-backed secure storage; prefs are never used.
     try {
       final stored = await _secureStorage.read(key: _ssApiKey);
       if (stored != null && stored.trim().isNotEmpty) {
@@ -123,8 +114,6 @@ class AppState extends ChangeNotifier {
         apiKey = Secrets.compiledAiKey;
       }
     } catch (_) {
-      // Secure storage unavailable (rare device/OS issue) — fall back to
-      // the compiled default rather than failing startup.
       apiKey = Secrets.compiledAiKey;
     }
     sessionUnlocked = false;
@@ -153,8 +142,6 @@ class AppState extends ChangeNotifier {
 
   String _id() => DateTime.now().microsecondsSinceEpoch.toString();
 
-  /// Copies a picked image into the app's documents directory so it
-  /// survives cache clears and OS temp cleanup. Returns the new path.
   Future<String?> persistImage(String? sourcePath) async {
     if (sourcePath == null || sourcePath.isEmpty) return null;
     try {
@@ -171,8 +158,6 @@ class AppState extends ChangeNotifier {
       return sourcePath;
     }
   }
-
-  // ---- Library items ----
 
   List<LifeItem> itemsOfType(ItemType t) {
     final l = items.where((i) => i.type == t).toList()
@@ -250,8 +235,6 @@ class AppState extends ChangeNotifier {
     return l;
   }
 
-  // ---- Notes ----
-
   LifeItem createNote(String title, String body) {
     final safeTitle = _sanitize(title, maxTitleLength);
     final safeBody = _sanitize(body, maxBodyLength);
@@ -266,8 +249,6 @@ class AppState extends ChangeNotifier {
     addItem(n);
     return n;
   }
-
-  // ---- Tasks ----
 
   List<Task> get openTasks =>
       tasks.where((t) => !t.done).toList()
@@ -301,8 +282,6 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ---- Reminders ----
-
   List<Reminder> get upcomingReminders {
     final l = reminders.where((r) => !r.fired).toList()
       ..sort((a, b) => a.when.compareTo(b.when));
@@ -328,8 +307,6 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ---- Chat ----
-
   void addMessage(ChatMessage m) {
     messages.add(m);
     _saveAll();
@@ -341,8 +318,6 @@ class AppState extends ChangeNotifier {
     _saveAll();
     notifyListeners();
   }
-
-  // ---- Profile ----
 
   Future<void> updateProfile(
       {String? name, String? email, String? avatar}) async {
@@ -360,7 +335,6 @@ class AppState extends ChangeNotifier {
     }
     notifyListeners();
   }
-
 
   Future<void> markNotifPermAsked() async {
     notifPermAsked = true;
@@ -397,7 +371,6 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Immediately engage the lock gate (used when App Lock is enabled).
   void lockNow() {
     sessionUnlocked = false;
     notifyListeners();
@@ -406,7 +379,6 @@ class AppState extends ChangeNotifier {
   Future<void> setAiConfig({String? key, String? model}) async {
     if (key != null) {
       final trimmed = key.trim();
-      // Reject absurd sizes; a real key is well under this.
       apiKey = trimmed.length > 300 ? trimmed.substring(0, 300) : trimmed;
       try {
         if (apiKey.isEmpty) {
@@ -416,8 +388,6 @@ class AppState extends ChangeNotifier {
           await _secureStorage.write(key: _ssApiKey, value: apiKey);
         }
       } catch (_) {
-        // Secure storage write failed — keep the in-memory value for this
-        // session so the feature still works.
       }
     }
     if (model != null && model.trim().isNotEmpty) {

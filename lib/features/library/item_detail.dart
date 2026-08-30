@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,7 +11,6 @@ import '../../data/scope.dart';
 import '../../services/ai_service.dart';
 import '../../widgets/common.dart';
 
-/// Routes a library item to the right detail screen.
 void openItem(BuildContext context, LifeItem item) {
   if (item.type == ItemType.note) {
     Navigator.pushNamed(context, '/note-edit', arguments: item.id);
@@ -20,7 +19,6 @@ void openItem(BuildContext context, LifeItem item) {
   }
 }
 
-/// Detail screen for documents, screenshots, receipts and tickets.
 class DocumentDetailScreen extends StatelessWidget {
   final String itemId;
   const DocumentDetailScreen({super.key, required this.itemId});
@@ -139,7 +137,6 @@ class _DetailBodyState extends State<_DetailBody> {
               ],
             ),
             const SizedBox(height: 18),
-            // Preview
             Container(
               height: 190,
               decoration: BoxDecoration(
@@ -169,7 +166,6 @@ class _DetailBodyState extends State<_DetailBody> {
                 style: AppText.caption),
             const SizedBox(height: 16),
 
-            // AI Summary
             AppCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,7 +203,6 @@ class _DetailBodyState extends State<_DetailBody> {
             ),
             const SizedBox(height: 14),
 
-            // Save to category
             SectionHeader(t(context, 'categories')),
             AppCard(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -236,7 +231,6 @@ class _DetailBodyState extends State<_DetailBody> {
             ),
             const SizedBox(height: 14),
 
-            // Actions
             Row(
               children: [
                 _aiAction(t(context, 'summarizeA')),
@@ -295,7 +289,6 @@ class _DetailBodyState extends State<_DetailBody> {
 
             const SizedBox(height: 16),
 
-            // Full content
             SectionHeader(t(context, 'content')),
             AppCard(
               child: Text(item.content, style: AppText.body),
@@ -533,7 +526,6 @@ class _IconBtnWrap extends StatelessWidget {
   }
 }
 
-/// Filtered list screen for a category (built-in or custom).
 class CategoryScreen extends StatelessWidget {
   final dynamic filter; // ItemType or '__custom:<name>'
   const CategoryScreen({super.key, required this.filter});
@@ -683,7 +675,6 @@ class CategoryScreen extends StatelessWidget {
       imagePath: persisted,
       createdAt: DateTime.now(),
     );
-    // Keep the item inside the category it was added from.
     item.category = defaultCategory;
     state.addItem(item);
     if (!context.mounted) return;

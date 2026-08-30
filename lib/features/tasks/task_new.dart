@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../core/fmt.dart';
 import '../../core/l10n.dart';
 import '../../core/theme.dart';
@@ -16,7 +16,6 @@ class TaskNewScreen extends StatefulWidget {
 class _TaskNewScreenState extends State<TaskNewScreen> {
   final _title = TextEditingController();
   TaskPriority _priority = TaskPriority.normal;
-  // -1 = no date, -2 = custom calendar date, 0 = today, 1 = tomorrow...
   int _dayOffset = 0;
   DateTime? _customDate;
   TimeOfDay _time = const TimeOfDay(hour: 17, minute: 0);

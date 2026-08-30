@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../core/l10n.dart';
 import '../../core/theme.dart';
 import '../../data/models.dart';
@@ -48,7 +48,6 @@ class _AiChatScreenState extends State<AiChatScreen> {
 
   Future<void> _send(String text) async {
     if (text.trim().isEmpty || _busy) return;
-    // Cap prompt size before it enters history or leaves the device.
     text = text.trim().length > 4000
         ? text.trim().substring(0, 4000)
         : text.trim();
@@ -238,7 +237,6 @@ class _AiChatScreenState extends State<AiChatScreen> {
                   ],
                 ),
               ),
-              // Input bar
               Container(
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                 decoration: BoxDecoration(

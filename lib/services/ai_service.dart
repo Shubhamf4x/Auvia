@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
@@ -6,8 +6,6 @@ import 'package:http/http.dart' as http;
 import '../core/fmt.dart';
 import '../data/app_state.dart';
 import '../data/models.dart';
-
-/// ---------- Provider abstraction ----------
 
 enum AiCapability {
   textGeneration,
@@ -39,8 +37,6 @@ abstract class AiProvider {
   Future<ScanAnalysis> analyzeImage(String fileName, {String? hint});
 }
 
-/// Local, offline heuristic provider — works without any network or API key.
-/// Swap this with a cloud provider later without touching the UI layer.
 class LocalHeuristicProvider implements AiProvider {
   @override
   String get name => 'On-device AI';
@@ -85,9 +81,6 @@ class LocalHeuristicProvider implements AiProvider {
   }
 }
 
-/// ---------- Service ----------
-
-/// Cloud provider — OpenRouter (bring-your-own API key, stored on device).
 class OpenRouterProvider implements AiProvider {
   static const defaultModel = 'nvidia/nemotron-3-ultra-550b-a55b:free';
   static const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
@@ -110,8 +103,6 @@ class OpenRouterProvider implements AiProvider {
     ]);
   }
 
-  /// Chat completion over the OpenRouter API.
-  /// [messages] values may be String or List (multimodal content parts).
   Future<String> chat(List<Map<String, dynamic>> messages) async {
     final resp = await http
         .post(
@@ -138,7 +129,6 @@ class OpenRouterProvider implements AiProvider {
     }
     final msg = choices[0]['message'] as Map<String, dynamic>;
     final raw = (msg['content'] as String?) ?? '';
-    // Reasoning models may emit <think> blocks — strip them for chat.
     var clean = raw.replaceAll(
         RegExp(r'<think>[\s\S]*?</think>'), '').trim();
     if (clean.startsWith('<think>')) {
@@ -148,7 +138,6 @@ class OpenRouterProvider implements AiProvider {
     return clean;
   }
 
-  // Image analysis stays on-device unless AiService routes it to vision.
   final LocalHeuristicProvider _local = LocalHeuristicProvider();
 
   @override
@@ -156,11 +145,9 @@ class OpenRouterProvider implements AiProvider {
       _local.analyzeImage(fileName, hint: hint);
 }
 
-/// Keyless fallback provider (no API key required, generic naming).
 class KeylessProvider {
   static const endpoint = 'https://text.pollinations.ai/openai';
 
-  /// Chat completion without any API key. Throws on failure.
   Future<String> chat(List<Map<String, dynamic>> messages) async {
     final resp = await http
         .post(
@@ -214,7 +201,6 @@ class AiService {
   Future<AiReply> handleChat(String input, AppState state) async {
     final q = input.toLowerCase().trim();
 
-    // --- Reminder intent (handled locally so actions actually happen) ---
     final remindMatch = RegExp(
             r'(remind me to|set a reminder(?: to| for)?|reminder(?: to| for)?)\s+(.+)')
         .firstMatch(q);
@@ -233,7 +219,6 @@ class AiService {
       );
     }
 
-    // --- Task intent (handled locally) ---
     final taskMatch =
         RegExp(r'(add (?:a )?task(?: to)?|create (?:a )?task(?: to)?)\s+(.+)')
             .firstMatch(q);
@@ -249,10 +234,7 @@ class AiService {
       );
     }
 
-    // --- Cloud AI when an API key is configured ---
     if (state.apiKey.isNotEmpty) {
-      // Try the selected model first, then verified free fallbacks,
-      // so a single overloaded/unavailable model never breaks chat.
       final candidates = [
         state.aiModel,
         ..._fallbackModels.where((m) => m != state.aiModel),
@@ -265,12 +247,10 @@ class AiService {
             return AiReply(text: text.trim());
           }
         } catch (_) {
-          // Try the next model.
         }
       }
     }
 
-    // --- Keyless cloud fallback (no API key needed) ---
     try {
       final keyless = KeylessProvider();
       final text = await keyless.chat(_buildMessages(input, state));
@@ -278,7 +258,6 @@ class AiService {
         return AiReply(text: text.trim());
       }
     } catch (_) {
-      // Fall through to on-device.
     }
 
     final local = _localAnswer(input, state);
@@ -289,7 +268,6 @@ class AiService {
     );
   }
 
-  /// Verified free OpenRouter models used as automatic fallbacks.
   static const _fallbackModels = [
     'nvidia/nemotron-3-ultra-550b-a55b:free',
     'minimax/minimax-m3:free',
@@ -297,8 +275,6 @@ class AiService {
     'minimax/minimax-m2.7:free',
   ];
 
-  /// AI image understanding: reads the image and returns structured analysis.
-  /// Returns null when every cloud attempt fails (caller falls back on-device).
   Future<ScanAnalysis?> analyzeImageSmart(
       String? imagePath, String fileName, String hint, AppState state) async {
     final prompt = 'You are analyzing an image for a personal organizer app. '
@@ -313,7 +289,6 @@ class AiService {
     if (imagePath != null) {
       try {
         final f = File(imagePath);
-        // Reject oversized images before reading them into memory (8 MB cap).
         if (f.existsSync() && f.lengthSync() > 8 * 1024 * 1024) {
           return null;
         }
@@ -336,7 +311,6 @@ class AiService {
       }
     }
 
-    // Vision-capable free models, tried in order (needs API key).
     if (state.apiKey.isNotEmpty) {
       for (final m in _visionModels) {
         try {
@@ -350,12 +324,10 @@ class AiService {
           final parsed = _parseAnalysis(text);
           if (parsed != null) return parsed;
         } catch (_) {
-          // Try next vision model.
         }
       }
     }
 
-    // Keyless text fallback can still structure a guess without the image.
     if (multimodal == null) {
       try {
         final text = await KeylessProvider().chat([
@@ -394,13 +366,11 @@ class AiService {
     }
   }
 
-  /// Verified free vision-capable models, tried in order.
   static const _visionModels = [
     'minimax/minimax-m3:free',
     'google/gemma-4-31b-it:free',
     'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
   ];
-
 
   List<Map<String, dynamic>> _buildMessages(String input, AppState state) {
     final lib = state.items.isEmpty
@@ -442,7 +412,6 @@ class AiService {
       {'role': 'system', 'content': system}
     ];
     var history = state.messages;
-    // The caller already appended the current input to history — skip it.
     if (history.isNotEmpty &&
         history.last.fromUser &&
         history.last.text.trim() == input.trim()) {
@@ -462,7 +431,6 @@ class AiService {
     final q = input.toLowerCase().trim();
     await Future<void>.delayed(const Duration(milliseconds: 650));
 
-    // --- Summarize intent ---
     if (q.contains('summar') ) {
       final item = _findItem(q, state);
       if (item != null) {
@@ -478,7 +446,6 @@ class AiService {
       );
     }
 
-    // --- Explain intent ---
     if (q.contains('explain')) {
       final item = _findItem(q, state);
       if (item != null) {
@@ -496,7 +463,6 @@ class AiService {
       );
     }
 
-    // --- Find / search intent ---
     final isFind = q.contains('find') ||
         q.contains('where') ||
         q.contains('search') ||
@@ -522,7 +488,6 @@ class AiService {
       );
     }
 
-    // --- Organize intent ---
     if (q.contains('organi')) {
       final uncategorized = state.items.where((i) => i.category.isEmpty).length;
       return AiReply(
@@ -534,7 +499,6 @@ class AiService {
       );
     }
 
-    // --- Default: stats + suggestions ---
     return AiReply(
       text:
           'I can help you with your information. Try:\n\n'
@@ -548,8 +512,6 @@ class AiService {
 
   String summarize(LifeItem item) =>
       item.aiSummary ?? _autoSummary(item);
-
-  // ---------- internals ----------
 
   LifeItem? _findItem(String q, AppState state) {
     LifeItem? best;
@@ -656,7 +618,7 @@ class AiService {
   int? _dayIndex(String text) {
     final t = text.toLowerCase();
     for (var i = 0; i < _dayNames.length; i++) {
-      if (t.contains(_dayNames[i])) return i + 1; // DateTime.weekday: Mon=1
+      if (t.contains(_dayNames[i])) return i + 1;
     }
     return null;
   }

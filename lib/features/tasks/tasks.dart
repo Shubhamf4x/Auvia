@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../core/fmt.dart';
 import '../../core/l10n.dart';
 import '../../core/theme.dart';

@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,7 +17,7 @@ class ScanScreen extends StatefulWidget {
 }
 
 class _ScanScreenState extends State<ScanScreen> {
-  int _stage = 0; // 0 pick, 1 analyzing, 2 result
+  int _stage = 0;
   String? _imagePath;
   ScanAnalysis? _analysis;
   static const _stageTexts = [
@@ -38,9 +38,7 @@ class _ScanScreenState extends State<ScanScreen> {
       picked = null;
     }
     if (!mounted) return;
-    // User cancelled the gallery picker — stay on the chooser.
     if (picked == null && source == ImageSource.gallery) return;
-    // Camera unavailable — fall back to a simulated scan so the flow still works.
     final file = picked ?? XFile('demo');
     final persisted = file.path == 'demo'
         ? null

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../core/fmt.dart';
 import '../../core/l10n.dart';
 import '../../core/theme.dart';
@@ -230,7 +230,6 @@ class _NotesScreenState extends State<NotesScreen> {
                       }),
                   ],
                 ),
-                // FAB (hidden during selection)
                 if (!_selectMode)
                   Positioned(
                     right: 20,
@@ -298,7 +297,6 @@ class _NoteEditScreenState extends State<NoteEditScreen> {
   void _save({bool pop = true}) {
     final state = AppScope.of(context);
     if (widget.noteId == null) {
-      // Don't create empty notes when backing out of a new editor.
       if (_title.text.trim().isEmpty && _body.text.trim().isEmpty) {
         if (pop && mounted) Navigator.pop(context);
         return;

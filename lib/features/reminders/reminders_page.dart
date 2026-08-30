@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart' hide RepeatMode;
+import 'package:flutter/material.dart' hide RepeatMode;
 import '../../core/fmt.dart';
 import '../../core/l10n.dart';
 import '../../core/theme.dart';

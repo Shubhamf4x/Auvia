@@ -1,4 +1,4 @@
-﻿enum ItemType { screenshot, document, note, receipt, ticket }
+enum ItemType { screenshot, document, note, receipt, ticket }
 
 extension ItemTypeX on ItemType {
   String get label {

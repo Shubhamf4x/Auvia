@@ -1,11 +1,10 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import '../core/l10n.dart';
 import '../core/theme.dart';
 import '../data/scope.dart';
 import 'common.dart';
 
-/// Preset AI profiles shown in the UI. Real model IDs stay internal.
 const List<({String id, String label, String desc})> freeModels = [
   (
     id: 'nvidia/nemotron-3-ultra-550b-a55b:free',
@@ -29,7 +28,6 @@ const List<({String id, String label, String desc})> freeModels = [
   ),
 ];
 
-/// Bottom sheet to connect the app to AI (free, key stays on device).
 Future<void> showAiSettingsSheet(BuildContext context) {
   final state = AppScope.of(context);
   String selected = state.aiModel;

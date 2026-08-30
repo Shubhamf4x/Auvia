@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,7 +17,7 @@ class UploadScreen extends StatefulWidget {
 }
 
 class _UploadScreenState extends State<UploadScreen> {
-  int _stage = 0; // 0 choose, 1 analyzing, 2 result
+  int _stage = 0;
   String? _imagePath;
   ScanAnalysis? _analysis;
   bool _busy = false;

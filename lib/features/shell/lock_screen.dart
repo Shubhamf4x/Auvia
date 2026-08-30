@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 
 import '../../core/l10n.dart';
@@ -42,7 +42,6 @@ class _LockScreenState extends State<LockScreen> {
     if (_checking) return;
     final state = AppScope.of(context);
     if (!state.biometricsEnabled || !_canBiometrics) {
-      // App Lock without biometrics — fall back to manual unlock.
       return;
     }
     setState(() {

@@ -12,7 +12,6 @@ class AppScope extends InheritedWidget {
   bool updateShouldNotify(AppScope oldWidget) => true;
 }
 
-/// Rebuilds subtree whenever AppState changes.
 class StateRefresher extends StatelessWidget {
   final Widget Function(BuildContext, AppState) builder;
   const StateRefresher({super.key, required this.builder});

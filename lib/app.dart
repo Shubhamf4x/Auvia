@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -49,7 +49,6 @@ class _AppRootState extends State<AppRoot> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Re-engage the lock gate whenever the app leaves the foreground.
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.hidden) {
       final s = widget.state;
@@ -61,8 +60,6 @@ class _AppRootState extends State<AppRoot> with WidgetsBindingObserver {
 
   Future<void> _bootstrap() async {
     await widget.state.load();
-    // Show the first usable frame immediately; defer the one-time
-    // notification-permission prompt so it never blocks startup.
     if (mounted) setState(() => _ready = true);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestNotificationPermissionOnce();
@@ -74,11 +71,9 @@ class _AppRootState extends State<AppRoot> with WidgetsBindingObserver {
     try {
       await Permission.notification.request();
     } catch (_) {
-      // Permission plugin unavailable — continue silently.
     }
     await widget.state.markNotifPermAsked();
   }
-
 
   void _applySystemUI() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -179,7 +174,6 @@ class _AppRootState extends State<AppRoot> with WidgetsBindingObserver {
   }
 }
 
-/// A focused AI entry point: opens the chat and immediately asks [prompt].
 class AiFocusScreen extends StatelessWidget {
   final String prompt;
   const AiFocusScreen({super.key, required this.prompt});
@@ -190,7 +184,6 @@ class AiFocusScreen extends StatelessWidget {
   }
 }
 
-/// Shows the lock screen while the app is locked.
 class _LockedGate extends StatelessWidget {
   final bool locked;
   const _LockedGate({required this.locked});

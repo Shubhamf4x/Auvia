@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../core/theme.dart';
 import '../../core/l10n.dart';
 import '../../data/scope.dart';
@@ -19,8 +19,6 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
-    // Rebuild on every state change (incl. theme switch) so the
-    // bottom nav bar and drawer always match the active palette.
     return StateRefresher(
       builder: (context, state) {
         final pages = [
@@ -65,7 +63,6 @@ class _MainShellState extends State<MainShell> {
     );
   }
 
-  /// Raised QR / scan action between Library and AI.
   Widget _qrButton() {
     return Expanded(
       child: GestureDetector(

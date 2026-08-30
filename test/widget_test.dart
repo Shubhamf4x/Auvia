@@ -19,8 +19,6 @@ void main() {
   });
 
   test('malformed JSON does not crash decoding helpers', () {
-    // LifeItem.fromJson is only fed valid maps by app code, but verify
-    // a hand-crafted partial map restores with sane defaults.
     final restored = LifeItem.fromJson({
       'id': 'x',
       'type': 0,

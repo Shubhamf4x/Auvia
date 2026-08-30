@@ -23,7 +23,6 @@ class Fmt {
   static String dateWithTime(DateTime d) =>
       '${dayMonthYear(d)} · ${time12(d)}';
 
-  /// Relative label like "Today", "Yesterday", "2d", "Aug 18".
   static String relative(DateTime d) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);

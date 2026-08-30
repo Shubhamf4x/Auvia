@@ -181,7 +181,8 @@ flutter build apk --release --obfuscate --split-debug-info=build/symbols --split
 ### Configuration
 
 Auvia works out of the box on the keyless AI tier. To use your own OpenRouter
-key, create a **gitignored** local config file:
+key, create a **gitignored** local config file (see `config/auvia.local.json`
+on your machine, excluded via `.gitignore` — never commit it):
 
 ```bash
 # config/auvia.local.json
@@ -192,7 +193,7 @@ then build with:
 
 ```bash
 flutter build apk --release --dart-define-from-file=config/auvia.local.json
-# or simply: .\build_local.ps1
+# or simply: build_local.cmd
 ```
 
 | Define | Description |

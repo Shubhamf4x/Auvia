@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Auvia is a private, local-first app. Nothing is worth restoring from a
+  device backup more than the privacy of the user's notes, documents and
+  AI conversations — so backups are fully disabled.
+-->
+<full-backup-content>
+    <exclude domain="sharedpref" path="."/>
+    <exclude domain="file" path="."/>
+    <exclude domain="database" path="."/>
+    <exclude domain="external" path="."/>
+</full-backup-content>

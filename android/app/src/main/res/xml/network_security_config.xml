@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Auvia only ever talks to HTTPS endpoints. Cleartext (HTTP) traffic is
+  globally prohibited so a misconfigured URL can never leak data in
+  plaintext, and no third-party SDK can silently downgrade.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <!-- Only trust the system CAs; user-installed CAs are rejected
+                 so a compromised device profile cannot MITM AI traffic. -->
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
+</network-security-config>
